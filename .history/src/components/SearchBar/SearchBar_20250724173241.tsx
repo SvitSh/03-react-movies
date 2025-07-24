@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { FormEvent } from "react";
+import type { FormEvent } from "react"; // <-- вот так импортируем тип отдельно
 import styles from "./SearchBar.module.css";
 import toast from "react-hot-toast";
 
