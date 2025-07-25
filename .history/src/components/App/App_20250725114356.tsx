@@ -1,9 +1,9 @@
 // src/components/App/App.tsx
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster, toast } from "react-hot-toast";
 
 import { fetchMovies, fetchSearchMovies } from "../../services/movieService";
 import type { Movie, MovieResponse } from "../../types/movie";
@@ -27,15 +27,13 @@ const App = () => {
       searchQuery.trim()
         ? fetchSearchMovies(searchQuery, page)
         : fetchMovies(page),
-    placeholderData: undefined,
     refetchOnWindowFocus: false,
+    onSuccess: (data) => {
+      if (data.results.length === 0) {
+        toast.error("No movies found for your request.");
+      }
+    },
   });
-
-  useEffect(() => {
-    if (data && data.results.length === 0) {
-      toast.error("No movies found for your request.");
-    }
-  }, [data]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -48,15 +46,19 @@ const App = () => {
 
   return (
     <div className={styles.app}>
-      <Toaster position="top-center" reverseOrder={false} />
-      <SearchBar onSubmit={handleSearch} />
+      <div className={styles.header}>
+        <p>Powered by TMDB</p>
+        <SearchBar onSubmit={handleSearch} />
+      </div>
+
+      <Toaster position="top-right" />
 
       {isLoading && <Loader />}
       {isError && (
         <ErrorMessage>There was an error, please try again...</ErrorMessage>
       )}
 
-      {data?.results && data.results.length > 0 && (
+      {data?.results && (
         <>
           <MovieGrid movies={data.results} onSelect={setSelectedMovie} />
 

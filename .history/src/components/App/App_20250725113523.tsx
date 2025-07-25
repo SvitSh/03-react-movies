@@ -1,9 +1,5 @@
-// src/components/App/App.tsx
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import ReactPaginate from "react-paginate";
-import toast, { Toaster } from "react-hot-toast";
 
 import { fetchMovies, fetchSearchMovies } from "../../services/movieService";
 import type { Movie, MovieResponse } from "../../types/movie";
@@ -13,6 +9,7 @@ import MovieGrid from "../MovieGrid/MovieGrid";
 import MovieModal from "../MovieModal/MovieModal";
 import Loader from "../Loader/Loader";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import Pagination from "../Pagination/Pagination";
 
 import styles from "./App.module.css";
 
@@ -31,24 +28,17 @@ const App = () => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    if (data && data.results.length === 0) {
-      toast.error("No movies found for your request.");
-    }
-  }, [data]);
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setPage(1);
   };
 
-  const handlePageChange = ({ selected }: { selected: number }) => {
-    setPage(selected + 1);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
   return (
     <div className={styles.app}>
-      <Toaster position="top-center" reverseOrder={false} />
       <SearchBar onSubmit={handleSearch} />
 
       {isLoading && <Loader />}
@@ -56,21 +46,15 @@ const App = () => {
         <ErrorMessage>There was an error, please try again...</ErrorMessage>
       )}
 
-      {data?.results && data.results.length > 0 && (
+      {data?.results && (
         <>
           <MovieGrid movies={data.results} onSelect={setSelectedMovie} />
 
           {data.total_pages > 1 && (
-            <ReactPaginate
+            <Pagination
               pageCount={Math.min(data.total_pages, 500)}
-              pageRangeDisplayed={5}
-              marginPagesDisplayed={1}
+              currentPage={page}
               onPageChange={handlePageChange}
-              forcePage={page - 1}
-              containerClassName={styles.pagination}
-              activeClassName={styles.active}
-              nextLabel="→"
-              previousLabel="←"
             />
           )}
         </>

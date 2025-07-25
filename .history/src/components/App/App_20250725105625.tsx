@@ -1,9 +1,8 @@
 // src/components/App/App.tsx
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
-import toast, { Toaster } from "react-hot-toast";
 
 import { fetchMovies, fetchSearchMovies } from "../../services/movieService";
 import type { Movie, MovieResponse } from "../../types/movie";
@@ -31,12 +30,6 @@ const App = () => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    if (data && data.results.length === 0) {
-      toast.error("No movies found for your request.");
-    }
-  }, [data]);
-
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setPage(1);
@@ -48,7 +41,6 @@ const App = () => {
 
   return (
     <div className={styles.app}>
-      <Toaster position="top-center" reverseOrder={false} />
       <SearchBar onSubmit={handleSearch} />
 
       {isLoading && <Loader />}
@@ -56,7 +48,7 @@ const App = () => {
         <ErrorMessage>There was an error, please try again...</ErrorMessage>
       )}
 
-      {data?.results && data.results.length > 0 && (
+      {data?.results && (
         <>
           <MovieGrid movies={data.results} onSelect={setSelectedMovie} />
 

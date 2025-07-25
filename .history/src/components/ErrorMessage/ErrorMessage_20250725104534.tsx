@@ -1,5 +1,4 @@
-import type { ReactNode } from "react";
-
+import { ReactNode } from "react";
 import styles from "./ErrorMessage.module.css";
 
 interface ErrorMessageProps {
