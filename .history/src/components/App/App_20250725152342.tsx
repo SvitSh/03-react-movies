@@ -1,10 +1,14 @@
+// src/components/App/App.tsx
+
+import { fetchMovies } from "../../services/movieService";
+import type { MovieResponse } from "../../types/movieResponse";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import ReactPaginate from "react-paginate";
 import toast, { Toaster } from "react-hot-toast";
 
 import { fetchMovies, fetchSearchMovies } from "../../services/movieService";
-import type { Movie, MovieResponse } from "../../types/movieResponse";
+import type { Movie, MovieResponse } from "../../types/movie";
 
 import SearchBar from "../SearchBar/SearchBar";
 import MovieGrid from "../MovieGrid/MovieGrid";
